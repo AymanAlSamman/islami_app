@@ -1,0 +1,105 @@
+import 'package:flutter/material.dart';
+import 'package:islami/config/settings_provider.dart';
+import 'package:provider/provider.dart';
+
+class TasbehView extends StatefulWidget {
+  const TasbehView({super.key});
+
+  @override
+  State<TasbehView> createState() => _TasbehViewState();
+}
+
+class _TasbehViewState extends State<TasbehView> {
+  List<String> tasbeh = [
+    'سبحان الله',
+    'الحمد لله',
+    'لا اله الا الله',
+    'الله اكبر',
+  ];
+  int currentIndex = 0;
+  int counter = 0;
+  double turns = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    Size mediaQuery = MediaQuery.of(context).size;
+    ThemeData theme = Theme.of(context);
+    ThemeData textTheme = Theme.of(context);
+    var vm = Provider.of<SettingsProvider>(context);
+
+    return Column(
+      children: [
+        Image.asset(vm.isDark()
+            ? "assets/images/dark_head_of_sebha.png"
+            : "assets/images/head_of_sebha.png"),
+        AnimatedRotation(
+          duration: Duration(seconds: 1),
+          turns: turns,
+          child: Image.asset(vm.isDark()
+              ? "assets/images/dark_body_of_sebha.png"
+              : "assets/images/body_of_sebha.png"),
+        ),
+        SizedBox(
+          height: 70,
+          width: mediaQuery.width,
+        ),
+        Text(
+          'عدد التسبيحات',
+          style: theme.textTheme.bodyLarge,
+        ),
+        const SizedBox(height: 40),
+        Container(
+          height: 70,
+          width: 70,
+          decoration: BoxDecoration(
+            color: vm.isDark()
+                ? theme.primaryColorDark.withOpacity(0.3)
+                : theme.primaryColor.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Center(
+            child: Text(
+              '$counter',
+              style: theme.textTheme.bodyMedium,
+            ),
+          ),
+        ),
+        const SizedBox(height: 40),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: theme.primaryColor),
+          onPressed: () {
+            onButtonClick();
+            counter++;
+            turns += 0.02;
+            setState(() {});
+          },
+          child: Text(
+            '${tasbeh[currentIndex]}',
+            style: theme.textTheme.bodyMedium!.copyWith(
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void onButtonClick() {
+    setState(() {
+      counter + 1;
+      if (counter == 31 && currentIndex == 0) {
+        currentIndex = 1;
+        counter = 0;
+      } else if (counter == 31 && currentIndex == 1) {
+        currentIndex = 2;
+        counter = 0;
+      } else if (counter == 31 && currentIndex == 2) {
+        currentIndex = 3;
+        counter = 0;
+      } else if (counter == 31 && currentIndex == 3) {
+        currentIndex = 0;
+        counter = 0;
+      }
+    });
+  }
+}
